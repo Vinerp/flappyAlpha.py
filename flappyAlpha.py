@@ -95,68 +95,72 @@ def canos_aleatorios(xpos):
     return (cano, canoInver)
 
 
-pygame.init()
-tela = pygame.display.set_mode((LarguraTela, AlturaTela))
+def jogo():
 
-fundo = pygame.image.load('background-day.png')
-fundo = pygame.transform.scale(fundo, (LarguraTela, AlturaTela))
+    pygame.init()
+    tela = pygame.display.set_mode((LarguraTela, AlturaTela))
 
-passaroGP = pygame.sprite.Group()
-passaro = Passaro()
-passaroGP.add(passaro)
+    fundo = pygame.image.load('background-day.png')
+    fundo = pygame.transform.scale(fundo, (LarguraTela, AlturaTela))
 
-chaoGP = pygame.sprite.Group()
-for i in range(2):
-    chao = Chao(LarguraChao * i)
-    chaoGP.add(chao)
+    passaroGP = pygame.sprite.Group()
+    passaro = Passaro()
+    passaroGP.add(passaro)
 
-canoGP = pygame.sprite.Group()
-for i in range(2):
-    canos = canos_aleatorios(LarguraTela * i + 800)
-    canoGP.add(canos[0])
-    canoGP.add(canos[1])
+    chaoGP = pygame.sprite.Group()
+    for i in range(2):
+        chao = Chao(LarguraChao * i)
+        chaoGP.add(chao)
 
-
-relogio = pygame.time.Clock()
-
-while True:
-    relogio.tick(30)
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-
-        if event.type == KEYDOWN:
-            if event.key == K_SPACE:
-                passaro.salto()
-
-    tela.blit(fundo, (0, 0))
-
-    if fora_de_tela(chaoGP.sprites()[0]):
-        chaoGP.remove(chaoGP.sprites()[0])
-
-        new_ground = Chao(LarguraChao - 20)
-        chaoGP.add(new_ground)
-
-    if fora_de_tela(canoGP.sprites()[0]):
-        canoGP.remove(canoGP.sprites()[0])
-        canoGP.remove(canoGP.sprites()[0])
-
-        canos = canos_aleatorios(LarguraTela * 2)
-
+    canoGP = pygame.sprite.Group()
+    for i in range(2):
+        canos = canos_aleatorios(LarguraTela * i + 800)
         canoGP.add(canos[0])
         canoGP.add(canos[1])
 
-    passaroGP.update()
-    chaoGP.update()
-    canoGP.update()
 
-    passaroGP.draw(tela)
-    canoGP.draw(tela)
-    chaoGP.draw(tela)
+    relogio = pygame.time.Clock()
 
-    pygame.display.update()
+    while True:
+        relogio.tick(30)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                quit()
 
-    if (pygame.sprite.groupcollide(passaroGP, chaoGP, False, False, pygame.sprite.collide_mask) or
-       pygame.sprite.groupcollide(passaroGP, canoGP, False, False, pygame.sprite.collide_mask)):
-        input()
-        break
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    passaro.salto()
+
+        tela.blit(fundo, (0, 0))
+
+        if fora_de_tela(chaoGP.sprites()[0]):
+            chaoGP.remove(chaoGP.sprites()[0])
+
+            new_ground = Chao(LarguraChao - 20)
+            chaoGP.add(new_ground)
+
+        if fora_de_tela(canoGP.sprites()[0]):
+            canoGP.remove(canoGP.sprites()[0])
+            canoGP.remove(canoGP.sprites()[0])
+
+            canos = canos_aleatorios(LarguraTela * 2)
+
+            canoGP.add(canos[0])
+            canoGP.add(canos[1])
+
+        passaroGP.update()
+        chaoGP.update()
+        canoGP.update()
+
+        passaroGP.draw(tela)
+        canoGP.draw(tela)
+        chaoGP.draw(tela)
+
+        pygame.display.update()
+
+        if (pygame.sprite.groupcollide(passaroGP, chaoGP, False, False, pygame.sprite.collide_mask) or
+        pygame.sprite.groupcollide(passaroGP, canoGP, False, False, pygame.sprite.collide_mask)):
+            input()
+            break
+jogo()    
