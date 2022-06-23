@@ -15,6 +15,10 @@ AlturaCano = 500
 
 DistanciaCano = 200
 
+black = (0, 0, 0)
+white = (255, 255, 255)
+gameEvents = pygame.event
+
 class Passaro(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -101,13 +105,15 @@ def jogar_novamente():
                 jogo()
 
 def jogo():
-
+    pontos = 0
     pygame.init()
+    jogando = True
     tela = pygame.display.set_mode((LarguraTela, AlturaTela))
-
     fundo = pygame.image.load('background-day.png')
     fundo = pygame.transform.scale(fundo, (LarguraTela, AlturaTela))
-
+    fonte = pygame.font.Font("freesansbold.ttf", 35)
+    ponto = fonte.render("Pontos: "+str(pontos), True, black)
+    tela.blit(ponto, (50, 50))
     passaroGP = pygame.sprite.Group()
     passaro = Passaro()
     passaroGP.add(passaro)
@@ -131,11 +137,12 @@ def jogo():
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                quit()
+                
 
             if event.type == KEYDOWN:
                 if event.key == K_SPACE:
                     passaro.salto()
+                    pontos +=1
 
         tela.blit(fundo, (0, 0))
         if jogando == True:
@@ -175,8 +182,7 @@ def jogo():
                 tela.blit(textoContinue, (50, 200))
 
                 pygame.display.update()
-                jogar_novamente()
+                
                 input()
-                break
-  
-jogo()    
+                jogar_novamente()
+jogo()        
