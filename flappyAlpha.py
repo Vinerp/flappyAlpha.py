@@ -15,9 +15,17 @@ AlturaCano = 500
 
 DistanciaCano = 200
 
+tela = pygame.display
+tela.set_caption("Flappy Dos Cria")
 black = (0, 0, 0)
 white = (255, 255, 255)
+
 gameEvents = pygame.event
+gameIcon = pygame.image.load("bluebird-midflap.png")
+tela.set_icon(gameIcon)
+
+
+
 
 class Passaro(pygame.sprite.Sprite):
 
@@ -100,24 +108,27 @@ def canos_aleatorios(xpos):
 
 def jogar_novamente():
     for event in pygame.event.get():
-        if event.type == KEYDOWN:
-             if event.key == K_SPACE:
+        if event.type == pygame.KEYDOWN:
+            if event.key == K_SPACE:
                 jogo()
-
+    
 def jogo():
-    pontos = 0
+    
     pygame.init()
+    pontos = 0
     jogando = True
     tela = pygame.display.set_mode((LarguraTela, AlturaTela))
     fundo = pygame.image.load('background-day.png')
     fundo = pygame.transform.scale(fundo, (LarguraTela, AlturaTela))
-    fonte = pygame.font.Font("freesansbold.ttf", 35)
-    ponto = fonte.render("Pontos: "+str(pontos), True, black)
-    tela.blit(ponto, (50, 50))
+
+    game_over = False
+    game_over_image = pygame.image.load("message.png").convert_alpha()
+    game_over_rect = game_over_image.get_rect(center=(LarguraTela//2,AlturaTela//2))
+
     passaroGP = pygame.sprite.Group()
     passaro = Passaro()
     passaroGP.add(passaro)
-
+    
     chaoGP = pygame.sprite.Group()
     for i in range(2):
         chao = Chao(LarguraChao * i)
@@ -134,55 +145,58 @@ def jogo():
 
     while True:
         relogio.tick(30)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                
-
-            if event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    passaro.salto()
-                    pontos +=1
-
-        tela.blit(fundo, (0, 0))
         if jogando == True:
-            if fora_de_tela(chaoGP.sprites()[0]):
-                chaoGP.remove(chaoGP.sprites()[0])
-
-                new_ground = Chao(LarguraChao - 20)
-                chaoGP.add(new_ground)
-
-            if fora_de_tela(canoGP.sprites()[0]):
-                canoGP.remove(canoGP.sprites()[0])
-                canoGP.remove(canoGP.sprites()[0])
-
-                canos = canos_aleatorios(LarguraTela * 2)
-
-                canoGP.add(canos[0])
-                canoGP.add(canos[1])
-
-            passaroGP.update()
-            chaoGP.update()
-            canoGP.update()
-
-            passaroGP.draw(tela)
-            canoGP.draw(tela)
-            chaoGP.draw(tela)
-        
-            pygame.display.update()
-
-            if (pygame.sprite.groupcollide(passaroGP, chaoGP, False, False, pygame.sprite.collide_mask) or
-            pygame.sprite.groupcollide(passaroGP, canoGP, False, False, pygame.sprite.collide_mask)):
-                jogando == False
-                fonte = pygame.font.Font("freesansbold.ttf", 35)
-                texto = fonte.render("Você fez "+str(pontos) +" pontos!", True, black)
-                tela.blit(texto, (50, 50))
-                fonteContinue = pygame.font.Font("freesansbold.ttf", 25)
-                textoContinue = fonteContinue.render("press space to restart", True, white)
-                tela.blit(textoContinue, (50, 200))
-
-                pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
                 
-                input()
-                jogar_novamente()
-jogo()        
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == K_SPACE and not game_over:
+                        passaro.salto()
+				                        
+            tela.blit(fundo, (0, 0))
+            if not game_over:
+                if fora_de_tela(chaoGP.sprites()[0]):
+                    chaoGP.remove(chaoGP.sprites()[0])
+
+                    new_ground = Chao(LarguraChao - 20)
+                    chaoGP.add(new_ground)
+
+                if fora_de_tela(canoGP.sprites()[0]):
+                    pontos +=1
+                    canoGP.remove(canoGP.sprites()[0])
+                    canoGP.remove(canoGP.sprites()[0])
+
+                    canos = canos_aleatorios(LarguraTela * 2)
+
+                    canoGP.add(canos[0])
+                    canoGP.add(canos[1])
+
+                passaroGP.update()
+                chaoGP.update()
+                canoGP.update()
+
+                passaroGP.draw(tela)
+                canoGP.draw(tela)
+                chaoGP.draw(tela)
+                fontes = pygame.font.Font("freesansbold.ttf", 35)
+                ponto = fontes.render("Pontos: "+str(pontos), True, black)
+                tela.blit(ponto, (200, 750))
+                pygame.display.update()
+
+                if(pygame.sprite.groupcollide(passaroGP, chaoGP, False, False, pygame.sprite.collide_mask) or
+                    pygame.sprite.groupcollide(passaroGP, canoGP, False, False, pygame.sprite.collide_mask)):
+                        game_over = True
+                        tela.blit(game_over_image, game_over_rect)
+                        jogando == False
+                        fonte = pygame.font.Font("freesansbold.ttf", 35)
+                        texto = fonte.render("Você fez "+str(pontos) +" pontos!", True, black)
+                        tela.blit(texto, (50, 50))
+                        fonteContinue = pygame.font.Font("freesansbold.ttf", 20 )
+                        textoContinue = fonteContinue.render("press SPACE to restart", True, white)
+                        tela.blit(textoContinue, (50, 170))
+                        pygame.display.update()
+                        jogar_novamente()
+jogo()
+      
