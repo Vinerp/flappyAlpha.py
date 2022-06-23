@@ -1,6 +1,6 @@
 import pygame, random
 from pygame.locals import *
-#Fabiano, Matheus, Viner 
+
 LarguraTela = 400
 AlturaTela = 800
 velocidade = 10
