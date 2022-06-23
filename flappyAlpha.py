@@ -1,6 +1,6 @@
 import pygame, random
 from pygame.locals import *
-
+ 
 LarguraTela = 400
 AlturaTela = 800
 velocidade = 10
@@ -107,10 +107,7 @@ def canos_aleatorios(xpos):
     return (cano, canoInver)
 
 def jogar_novamente():
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == K_SPACE:
-                jogo()
+    pass
     
 def jogo():
     
@@ -142,21 +139,32 @@ def jogo():
 
 
     relogio = pygame.time.Clock()
-
+    inicio = False
     while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                            
+                if event.key == K_RETURN:
+                    print("aqui!")
+                    jogando =True
+                    game_over = False
+                    inicio =True
+                    jogo()
+                    
+
+                if event.key == K_SPACE:
+                    if inicio==False:
+                        inicio=True
+                    else:
+                        passaro.salto()
+
         relogio.tick(30)
         if jogando == True:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == K_SPACE and not game_over:
-                        passaro.salto()
 				                        
             tela.blit(fundo, (0, 0))
-            if not game_over:
+            if not game_over and inicio==True:
                 if fora_de_tela(chaoGP.sprites()[0]):
                     chaoGP.remove(chaoGP.sprites()[0])
 
@@ -194,7 +202,7 @@ def jogo():
                         texto = fonte.render("Você fez "+str(pontos) +" pontos!", True, black)
                         tela.blit(texto, (50, 50))
                         fonteContinue = pygame.font.Font("freesansbold.ttf", 20 )
-                        textoContinue = fonteContinue.render("press SPACE to restart", True, white)
+                        textoContinue = fonteContinue.render("press ENTER to restart", True, white)
                         tela.blit(textoContinue, (50, 170))
                         pygame.display.update()
                         jogar_novamente()
