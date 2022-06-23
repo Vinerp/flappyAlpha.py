@@ -94,6 +94,11 @@ def canos_aleatorios(xpos):
     canoInver = Cano(True, xpos, AlturaTela - tamanho - DistanciaCano)
     return (cano, canoInver)
 
+def jogar_novamente():
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:
+             if event.key == K_SPACE:
+                jogo()
 
 def jogo():
 
@@ -133,34 +138,45 @@ def jogo():
                     passaro.salto()
 
         tela.blit(fundo, (0, 0))
+        if jogando == True:
+            if fora_de_tela(chaoGP.sprites()[0]):
+                chaoGP.remove(chaoGP.sprites()[0])
 
-        if fora_de_tela(chaoGP.sprites()[0]):
-            chaoGP.remove(chaoGP.sprites()[0])
+                new_ground = Chao(LarguraChao - 20)
+                chaoGP.add(new_ground)
 
-            new_ground = Chao(LarguraChao - 20)
-            chaoGP.add(new_ground)
+            if fora_de_tela(canoGP.sprites()[0]):
+                canoGP.remove(canoGP.sprites()[0])
+                canoGP.remove(canoGP.sprites()[0])
 
-        if fora_de_tela(canoGP.sprites()[0]):
-            canoGP.remove(canoGP.sprites()[0])
-            canoGP.remove(canoGP.sprites()[0])
+                canos = canos_aleatorios(LarguraTela * 2)
 
-            canos = canos_aleatorios(LarguraTela * 2)
+                canoGP.add(canos[0])
+                canoGP.add(canos[1])
 
-            canoGP.add(canos[0])
-            canoGP.add(canos[1])
+            passaroGP.update()
+            chaoGP.update()
+            canoGP.update()
 
-        passaroGP.update()
-        chaoGP.update()
-        canoGP.update()
+            passaroGP.draw(tela)
+            canoGP.draw(tela)
+            chaoGP.draw(tela)
+        
+            pygame.display.update()
 
-        passaroGP.draw(tela)
-        canoGP.draw(tela)
-        chaoGP.draw(tela)
+            if (pygame.sprite.groupcollide(passaroGP, chaoGP, False, False, pygame.sprite.collide_mask) or
+            pygame.sprite.groupcollide(passaroGP, canoGP, False, False, pygame.sprite.collide_mask)):
+                jogando == False
+                fonte = pygame.font.Font("freesansbold.ttf", 35)
+                texto = fonte.render("Você fez "+str(pontos) +" pontos!", True, black)
+                tela.blit(texto, (50, 50))
+                fonteContinue = pygame.font.Font("freesansbold.ttf", 25)
+                textoContinue = fonteContinue.render("press space to restart", True, white)
+                tela.blit(textoContinue, (50, 200))
 
-        pygame.display.update()
-
-        if (pygame.sprite.groupcollide(passaroGP, chaoGP, False, False, pygame.sprite.collide_mask) or
-        pygame.sprite.groupcollide(passaroGP, canoGP, False, False, pygame.sprite.collide_mask)):
-            input()
-            break
+                pygame.display.update()
+                jogar_novamente()
+                input()
+                break
+  
 jogo()    
