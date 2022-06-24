@@ -107,7 +107,7 @@ def canos_aleatorios(xpos):
     return (cano, canoInver)
 
 def jogar_novamente():
-    pass
+    jogo()
     
 def jogo():
     
@@ -147,11 +147,7 @@ def jogo():
             if event.type == pygame.KEYDOWN:
                             
                 if event.key == K_RETURN:
-                    print("aqui!")
-                    jogando =True
-                    game_over = False
-                    inicio =True
-                    jogo()
+                    jogar_novamente()
                     
 
                 if event.key == K_SPACE:
@@ -202,7 +198,7 @@ def jogo():
                         texto = fonte.render("Você fez "+str(pontos) +" pontos!", True, black)
                         tela.blit(texto, (50, 50))
                         fonteContinue = pygame.font.Font("freesansbold.ttf", 20 )
-                        textoContinue = fonteContinue.render("press ENTER to restart", True, white)
+                        textoContinue = fonteContinue.render("press SPACE to restart", True, white)
                         tela.blit(textoContinue, (50, 170))
                         pygame.display.update()
                         jogar_novamente()
