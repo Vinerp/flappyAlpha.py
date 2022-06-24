@@ -1,6 +1,15 @@
 import pygame, random
 from pygame.locals import *
- 
+import os
+
+arquivo = open("log.txt", "a")
+nome= input("Digite seu nome: ")
+email = input("Digite seu e-mail: ")
+arquivo = open("log.txt", "w")
+arquivo.write(nome + "\n")
+arquivo.write(email + "\n")
+arquivo.close()
+os.system("cls")
 LarguraTela = 400
 AlturaTela = 800
 velocidade = 10
@@ -202,5 +211,4 @@ def jogo():
                         tela.blit(textoContinue, (50, 170))
                         pygame.display.update()
                         jogar_novamente()
-jogo()
-      
+jogo()     
